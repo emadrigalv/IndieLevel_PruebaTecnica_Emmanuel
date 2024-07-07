@@ -1,8 +1,15 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : Character
 {
+    [Header("Dependencies")]
     [SerializeField] private Rigidbody2D playerRb;
+
+    [Header("Parametes")]
+    [SerializeField] private float noDamageCooldown;
+
+    private bool onDamage = false;
 
     public override void Move(Vector2 direction)
     {
@@ -11,6 +18,32 @@ public class Player : Character
 
     protected override void Die()
     {
-        throw new System.NotImplementedException();
+        // Debugin purposes
+        gameObject.SetActive(false);
+    }
+
+    public int InitializePlayerDamage()
+    {
+        return characterData.attackDamage;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy") && !onDamage)
+        {
+            StartCoroutine(GetHurtRoutine(collision));
+        }
+    }
+
+    private IEnumerator GetHurtRoutine(Collider2D collision)
+    {
+        onDamage = true;
+
+        Enemy enemy = collision.GetComponent<Enemy>();
+        TakeDamage(enemy.Attack());
+
+        Debug.Log("Huy ese mk me mordio, vida: " + currentHealth);
+
+        yield return new WaitForSeconds(noDamageCooldown);
     }
 }

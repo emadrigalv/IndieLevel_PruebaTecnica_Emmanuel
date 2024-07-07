@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class Enemy : Character
@@ -5,8 +6,7 @@ public class Enemy : Character
     [Header("Dependencies")]
     [SerializeField] private SpriteRenderer enemyRenderer;
 
-
-    [SerializeField] private Transform target;
+    private Transform target;
 
     private void OnEnable()
     {
@@ -32,7 +32,8 @@ public class Enemy : Character
 
     protected override void Die()
     {
-        throw new System.NotImplementedException();
+        gameObject.SetActive(false);
+        Debug.Log("Coin drop");
     }
 
     private void RandomColor()
@@ -40,5 +41,15 @@ public class Enemy : Character
         Color randomColor = new Color(Random.value, Random.value, Random.value);
 
         enemyRenderer.color = randomColor;
+    }
+
+    public float Attack()
+    {
+        return characterData.attackDamage;
+    }
+
+    public void InitializeEnemy()
+    {
+        currentHealth = characterData.maxHealth;
     }
 }
