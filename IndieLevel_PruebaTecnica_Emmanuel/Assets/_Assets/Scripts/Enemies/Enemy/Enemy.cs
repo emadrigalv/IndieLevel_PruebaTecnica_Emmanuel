@@ -1,12 +1,13 @@
-using JetBrains.Annotations;
 using UnityEngine;
 
-public class Enemy : Character
+public class Enemy : Character, IPooledObject
 {
     [Header("Dependencies")]
     [SerializeField] private SpriteRenderer enemyRenderer;
 
     private Transform target;
+
+    public static SpawnHandler spawnHandler;
 
     private void OnEnable()
     {
@@ -16,7 +17,7 @@ public class Enemy : Character
     protected override void Start()
     {
         base.Start();
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        target = GameObject.FindGameObjectWithTag("Player").transform;       
     }
 
     void Update()
@@ -32,7 +33,7 @@ public class Enemy : Character
 
     protected override void Die()
     {
-        gameObject.SetActive(false);
+        spawnHandler.EnemyDead(transform.position, gameObject);
         Debug.Log("Coin drop");
     }
 
@@ -51,5 +52,10 @@ public class Enemy : Character
     public void InitializeEnemy()
     {
         currentHealth = characterData.maxHealth;
+    }
+
+    public void OnObjectSpawn()
+    {
+        InitializeEnemy();
     }
 }
