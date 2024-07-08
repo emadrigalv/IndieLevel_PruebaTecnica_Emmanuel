@@ -21,6 +21,8 @@ public class UIHandler : MonoBehaviour
         textSawsDamage.text = sawStats.sawsDamage.ToString();
         textSawsSpeed.text = sawStats.sawsSpeed.ToString();
     }
+    
+    // Use Dictionary to have a tag and value to update the text and use enum to change the specific text
 
     public void ShowCanvasGroup(CanvasGroup canvasGroup)
     {
