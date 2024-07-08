@@ -22,6 +22,11 @@ public class Player : Character
         gameObject.SetActive(false);
     }
 
+    public void HealPlayer()
+    {
+        currentHealth = characterData.maxHealth;
+    }
+
     public int InitializePlayerDamage()
     {
         return characterData.attackDamage;

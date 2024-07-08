@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,22 +6,31 @@ using UnityEngine.UI;
 public class UIHandler : MonoBehaviour
 {
     [Header("Dependencies")]
-    [SerializeField] private TMP_Text textHP;
-    [SerializeField] private TMP_Text textCoins;
-    [SerializeField] private TMP_Text textSawsCount;
-    [SerializeField] private TMP_Text textSawsDamage;
-    [SerializeField] private TMP_Text textSawsSpeed;
+    [SerializedDictionary("UI Elements", "TMP Text")]
+    public SerializedDictionary<UIElement, TMP_Text> textElementsUI;
+    [SerializedDictionary("UI Elements", "Sliders")]
+    public SerializedDictionary<UIElement, Slider> slidersUI;
 
-    public void UpdatePlayerStatus(float playerHP, int coins, SawStats sawStats)
+    public enum UIElement
     {
-        textHP.text = playerHP.ToString();
-        textCoins.text = coins.ToString();
-        textSawsCount.text = sawStats.sawCount.ToString();
-        textSawsDamage.text = sawStats.sawsDamage.ToString();
-        textSawsSpeed.text = sawStats.sawsSpeed.ToString();
+        Health, Coins,
+        SawCount, SawDamage,
+        SawSpeed, RoundCount,
+        CoinsHUD, HealthBar,
+        TimerBar
     }
-    
-    // Use Dictionary to have a tag and value to update the text and use enum to change the specific text
+
+    public void UpdateUI(float value, UIElement type)
+    {
+        if ((int) type > 6)
+        {
+            slidersUI[type].value = value;
+        }
+        else
+        {
+            textElementsUI[type].text = value.ToString();
+        }
+    }
 
     public void ShowCanvasGroup(CanvasGroup canvasGroup)
     {
