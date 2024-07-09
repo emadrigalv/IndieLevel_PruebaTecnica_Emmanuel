@@ -14,7 +14,7 @@ public class InputHandler : MonoBehaviour
         moveCommand = new MoveCommand(player, direction);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         moveCommand?.Execute();
     }

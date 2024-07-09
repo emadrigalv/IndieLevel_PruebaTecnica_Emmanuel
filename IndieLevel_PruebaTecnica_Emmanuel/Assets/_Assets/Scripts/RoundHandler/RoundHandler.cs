@@ -13,10 +13,10 @@ public class RoundHandler : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private int timer;
 
-    private int currentTime;
     private bool inRound;
     private Coroutine timerRoutine;
 
+    public int currentTime {  get; private set; }
     public int roundCount {  get; private set; }
 
     private void Start()
@@ -36,7 +36,7 @@ public class RoundHandler : MonoBehaviour
         inRound = true;
         currentTime = timer;
 
-        OnStartRound.Invoke(roundCount);
+        OnStartRound?.Invoke(roundCount);
 
         timerRoutine = StartCoroutine(timerCoroutine());
     }
@@ -46,7 +46,7 @@ public class RoundHandler : MonoBehaviour
     {
         Debug.Log("Se invoko la monda");
         inRound = false;
-        OnFinishedRound.Invoke();
+        OnFinishedRound?.Invoke();
         roundCount++;
     }
 
@@ -70,7 +70,7 @@ public class RoundHandler : MonoBehaviour
             yield return new WaitForSeconds(1);
             currentTime--;
 
-            OnTimerChanged.Invoke(currentTime);
+            OnTimerChanged?.Invoke(currentTime);
         }
 
         FinishRound();

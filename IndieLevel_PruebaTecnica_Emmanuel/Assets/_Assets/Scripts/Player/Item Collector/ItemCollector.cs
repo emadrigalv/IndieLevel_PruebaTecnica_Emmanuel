@@ -13,7 +13,7 @@ public class ItemCollector : MonoBehaviour
 
             pickedItem.TakeIt();
 
-            OnCoinCollected.Invoke();
+            OnCoinCollected?.Invoke();
         }
     }
 }

@@ -18,14 +18,18 @@ public class InRoundState : IGameState
 
     public void EnterState()
     {
+        playerObject.transform.position = Vector3.zero;
         itemCollector = playerObject.GetComponent<ItemCollector>();
         player = playerObject.GetComponent<Player>();
+        float health = player.GetPlayerHealthStatus();
 
         SubscribeEvents();
 
+        uiHandler?.UpdateUI(health, UIHandler.UIElement.HealthBar);
         uiHandler?.ShowCanvasGroup(UIHandler.Screens.HUD);
         uiHandler?.UpdateUI(roundHandler.roundCount, UIHandler.UIElement.RoundCount);
         roundHandler?.StartRound();
+        uiHandler?.UpdateUI(roundHandler.currentTime, UIHandler.UIElement.TimerBar);
     }
 
     public void ExitState()

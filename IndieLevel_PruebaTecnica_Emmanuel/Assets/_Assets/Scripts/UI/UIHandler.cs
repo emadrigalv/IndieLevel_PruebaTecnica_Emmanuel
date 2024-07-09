@@ -84,6 +84,6 @@ public class UIHandler : MonoBehaviour
 
     public void StartGame()
     {
-        OnGameStart.Invoke();
+        OnGameStart?.Invoke();
     }
 }

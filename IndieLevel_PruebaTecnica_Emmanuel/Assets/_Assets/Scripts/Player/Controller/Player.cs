@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class Player : Character
 
     [Header("Dependencies")]
     [SerializeField] private Rigidbody2D playerRb;
+    [SerializeField] private MMF_Player playerMF;
+    [SerializeField] private MMF_Player healthBarMF;
 
     [Header("Parametes")]
     [SerializeField] private float noDamageCooldown;
@@ -17,6 +20,7 @@ public class Player : Character
     [HideInInspector] public UnityEvent<float> OnHealthChanged;
 
     private bool onDamage = false;
+    private Coroutine playerOnDamageRoutine;
 
     public override void Move(Vector2 direction)
     {
@@ -27,19 +31,24 @@ public class Player : Character
     {
         // Debugin purposes
         gameObject.SetActive(false);
-        OnPlayerDead.Invoke();
+        StopCoroutine(playerOnDamageRoutine);
+        onDamage = false;
+
+        OnPlayerDead?.Invoke();
     }
 
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-        OnHealthChanged.Invoke(currentHealth);
+        OnHealthChanged?.Invoke(currentHealth);
+        playerMF?.PlayFeedbacks();
+        healthBarMF?.PlayFeedbacks();
     }
 
     public void HealPlayer()
     {
         currentHealth = characterData.maxHealth;
-        OnHealthChanged.Invoke(currentHealth);
+        OnHealthChanged?.Invoke(currentHealth);
     }
 
     public float GetPlayerHealthStatus()
@@ -54,17 +63,17 @@ public class Player : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy") && !onDamage)
+        if (collision.CompareTag("Enemy") && !onDamage && this.isActiveAndEnabled)
         {
-            StartCoroutine(GetHurtRoutine(collision));
+            playerOnDamageRoutine = StartCoroutine(GetHurtRoutine(collision));
         }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy") && !onDamage)
+        if (collision.CompareTag("Enemy") && !onDamage && this.isActiveAndEnabled)
         {
-            StartCoroutine(GetHurtRoutine(collision));
+            playerOnDamageRoutine = StartCoroutine(GetHurtRoutine(collision));
         }
     }
 

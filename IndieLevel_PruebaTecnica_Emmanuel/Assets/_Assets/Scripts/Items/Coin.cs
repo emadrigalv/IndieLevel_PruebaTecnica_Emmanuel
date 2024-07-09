@@ -8,6 +8,7 @@ public class Coin : MonoBehaviour, IPickable, IPooledObject
 
     [Header("Parameters")]
     [SerializeField] private int coinScore;
+    [SerializeField] private Animator animator;
 
     public static void InitializeScore()
     {
@@ -21,12 +22,24 @@ public class Coin : MonoBehaviour, IPickable, IPooledObject
 
     public void OnObjectSpawn()
     {
-        // Play Coin animation
+        animator.Rebind();
+        animator.Update(0);
+        StartCoroutine(TimeToDisapear());
     }
 
     public void TakeIt()
     {
         CoinCollected(coinScore);
         gameObject.SetActive(false);
+    }
+
+    private IEnumerator TimeToDisapear()
+    {
+        Debug.Log("Se inicio el contador");
+
+        yield return new WaitForSeconds(5);
+
+        gameObject.SetActive(false);
+        Debug.Log("Se desaparecio");
     }
 }

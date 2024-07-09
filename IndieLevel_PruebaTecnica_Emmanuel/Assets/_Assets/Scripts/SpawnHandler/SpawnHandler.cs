@@ -34,7 +34,6 @@ public class SpawnHandler : MonoBehaviour
 
     public void SpawnEnemies()
     {
-        // agregar enemigos a la lista e inicializarlos en base a los nuevos datos
         spawnEnemiesCoroutine = StartCoroutine(WaitToSpawn());
     }
 
@@ -42,7 +41,6 @@ public class SpawnHandler : MonoBehaviour
     {
         objectPooler.SpawnFromPool("Coin", position);
         
-        //sacar enemigos de la lista
         activeEnemies.Remove(enemy);
         enemy.SetActive(false);
     }
@@ -62,7 +60,6 @@ public class SpawnHandler : MonoBehaviour
         SpawnEnemies();
     }
 
-    //[ContextMenu("Se acabo pa")]
     public void FinishedRound()
     {
         inRound = false;
@@ -91,7 +88,6 @@ public class SpawnHandler : MonoBehaviour
 
                 int randomSpawn = Random.Range(0, 4);
                 GameObject enemy = objectPooler.SpawnFromPool("Enemy", spawnPositions[randomSpawn].position);
-                enemy.GetComponent<Enemy>().InitializeEnemy();
 
                 activeEnemies.Add(enemy);
             }

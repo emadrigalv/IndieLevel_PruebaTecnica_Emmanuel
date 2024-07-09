@@ -46,7 +46,9 @@ public class Saw : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
+            Vector3 direction = collision.gameObject.transform.position - targetTransform.position;
             collision.GetComponent<Enemy>().TakeDamage(attackDamage);
+            collision.GetComponent<Enemy>().DamageBackwardsImpulse(direction);
         }
     }
 }
