@@ -8,18 +8,22 @@ public class Saw : MonoBehaviour
     [SerializeField] private CircleCollider2D sawCollider;
 
     private float speed;
-    private float speedMultiplier;
     private int attackDamage;
 
     private void Awake()
     {
-        sawRenderer.enabled = false;
-        sawCollider.enabled = false;
+        InitializeSaw();
     }
 
     private void Update()
     {
         transform.RotateAround(targetTransform.position, Vector3.forward, speed * Time.deltaTime);
+    }
+
+    public void InitializeSaw()
+    {
+        sawRenderer.enabled = false;
+        sawCollider.enabled = false;
     }
 
     public void SetSawSpeed(float speedUpgrade)

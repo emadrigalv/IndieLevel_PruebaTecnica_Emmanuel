@@ -11,29 +11,31 @@ public class SpawnHandler : MonoBehaviour
 
     [Header("Parameters")]
     [SerializeField] private int enemiesAlive;
+    [SerializeField] private float enemySpawnTime;
     [SerializeField] private bool inRound;
-    //[SerializeField] private int roundIndex;
+    [SerializeField] private InitialData initialData;
 
-    private Character_SO initialData;
     private List<GameObject> activeEnemies = new List<GameObject>();
     private Coroutine spawnEnemiesCoroutine;
 
     private void Start()
     {
-        Initialize();
+        EnemiesInitialize();
     }
 
-    public void Initialize()
+    public void EnemiesInitialize()
     {
         Enemy.spawnHandler = this;
-        initialData = enemyData;
+
+        enemyData.attackDamage = initialData.attackDamage;
+        enemyData.maxHealth = initialData.maxHealth;
+        enemyData.movementSpeed = initialData.movementSpeed;
     }
 
     public void SpawnEnemies()
     {
         // agregar enemigos a la lista e inicializarlos en base a los nuevos datos
         spawnEnemiesCoroutine = StartCoroutine(WaitToSpawn());
-        Debug.Log("oe ya volvio");
     }
 
     public void EnemyDead(Vector3 position, GameObject enemy)
@@ -54,7 +56,6 @@ public class SpawnHandler : MonoBehaviour
             enemyData.maxHealth = initialData.maxHealth * roundIndex;
             enemyData.movementSpeed = initialData.movementSpeed + (0.1f * roundIndex);
         }
-        else enemyData = initialData;
 
         inRound = true;
 
@@ -65,7 +66,7 @@ public class SpawnHandler : MonoBehaviour
     public void FinishedRound()
     {
         inRound = false;
-        StopCoroutine(spawnEnemiesCoroutine);
+        if (spawnEnemiesCoroutine != null) StopCoroutine(spawnEnemiesCoroutine);
 
         foreach (GameObject enemy in activeEnemies) 
         {
@@ -75,8 +76,7 @@ public class SpawnHandler : MonoBehaviour
         activeEnemies.Clear();
         spawnEnemiesCoroutine = null;
 
-        //Debuging purposes
-        enemyData = initialData;
+        Debug.Log("parar spawneo");
     }
 
     private IEnumerator WaitToSpawn()
@@ -87,7 +87,7 @@ public class SpawnHandler : MonoBehaviour
 
             for (int i = 0; i < enemiesToSpawn; i++)
             {
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(enemiesToSpawn);
 
                 int randomSpawn = Random.Range(0, 4);
                 GameObject enemy = objectPooler.SpawnFromPool("Enemy", spawnPositions[randomSpawn].position);
@@ -103,4 +103,12 @@ public class SpawnHandler : MonoBehaviour
 
         spawnEnemiesCoroutine = StartCoroutine(WaitToSpawn());
     }
+}
+
+[System.Serializable]
+public struct InitialData
+{
+    public float movementSpeed;
+    public int attackDamage;
+    public int maxHealth;
 }

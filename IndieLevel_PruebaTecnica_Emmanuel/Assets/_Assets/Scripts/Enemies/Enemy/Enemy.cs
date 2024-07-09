@@ -34,7 +34,6 @@ public class Enemy : Character, IPooledObject
     protected override void Die()
     {
         spawnHandler.EnemyDead(transform.position, gameObject);
-        Debug.Log("Coin drop");
     }
 
     private void RandomColor()

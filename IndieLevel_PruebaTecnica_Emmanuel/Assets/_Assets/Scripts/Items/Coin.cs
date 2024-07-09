@@ -4,14 +4,29 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour, IPickable, IPooledObject
 {
+    public static int coinsCollected;
+
+    [Header("Parameters")]
+    [SerializeField] private int coinScore;
+
+    public static void InitializeScore()
+    {
+        coinsCollected = 0;
+    }
+
+    public static void CoinCollected(int score)
+    {
+        coinsCollected += score;
+    }
+
     public void OnObjectSpawn()
     {
-        // Initialize Coin 
+        // Play Coin animation
     }
 
     public void TakeIt()
     {
-        Debug.Log("Plata recogida rey");
+        CoinCollected(coinScore);
         gameObject.SetActive(false);
     }
 }

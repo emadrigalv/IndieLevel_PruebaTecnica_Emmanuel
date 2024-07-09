@@ -10,26 +10,30 @@ public class SawsHandler : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private float speedUpgradePorcentage;
     [SerializeField] private int upgradeDamage;
-    [SerializeField] private SawStats sawStats;
+    [SerializeField] private SawStats initialSawData;
 
     private float speedMultiplier;
+    private SawStats currentSawStats;
 
     private void Start()
     {
         // Debugging purposes
-        InitializeSaws();
-        
+        InitializeSaws();        
     }
 
     public void InitializeSaws()
     {
-        sawStats.sawsDamage = player.InitializePlayerDamage();
+        initialSawData.sawsDamage = player.InitializePlayerDamage();
+        initialSawData.sawCount = 0;
         speedMultiplier = 1.0f;
+
+        currentSawStats = initialSawData;
 
         foreach (Saw saw in saws) 
         {
-            saw.SetSawSpeed(sawStats.sawsSpeed);
-            saw.SetDamage(sawStats.sawsDamage);
+            saw.InitializeSaw();
+            saw.SetSawSpeed(initialSawData.sawsSpeed);
+            saw.SetDamage(initialSawData.sawsDamage);
         }
 
         AddSaw();
@@ -38,31 +42,33 @@ public class SawsHandler : MonoBehaviour
     [ContextMenu("More Speed")]
     public void UpgradeSawSpeed()
     {
+        speedMultiplier += speedUpgradePorcentage;
+        currentSawStats.sawsSpeed = speedMultiplier * initialSawData.sawsSpeed;
+
         foreach (Saw saw in saws)
         {
-            speedMultiplier += speedUpgradePorcentage;
-            float speed = speedMultiplier * sawStats.sawsSpeed;
-            saw.SetSawSpeed(speed);
+            saw.SetSawSpeed(currentSawStats.sawsSpeed);
         }
     }
 
     [ContextMenu("Increase Saws Damage")]
     public void IncreaseSawsDamage()
     {
+        currentSawStats.sawsDamage += upgradeDamage;
+
         foreach (Saw saw in saws)
         {
-            sawStats.sawsDamage += upgradeDamage;
-            saw.SetDamage(sawStats.sawsDamage);
+            saw.SetDamage(currentSawStats.sawsDamage);
         }
     }
 
     [ContextMenu("Add saw")]
     public void AddSaw()
     {
-        if (sawStats.sawCount < 4)
+        if (currentSawStats.sawCount < 4)
         {
-            saws[sawStats.sawCount].ActivateSaw();
-            sawStats.sawCount++;
+            saws[currentSawStats.sawCount].ActivateSaw();
+            currentSawStats.sawCount++;
         }
         else
         {
@@ -73,9 +79,9 @@ public class SawsHandler : MonoBehaviour
     [ContextMenu("Get saws status")]
     public SawStats GetSawsStats()
     {
-        Debug.Log($"speed: {sawStats.sawsSpeed}, saws: {sawStats.sawCount}, damage: {sawStats.sawsDamage}");
+        Debug.Log($"speed: {currentSawStats.sawsSpeed}, saws: {currentSawStats.sawCount}, damage: {currentSawStats.sawsDamage}");
 
-        return sawStats;
+        return currentSawStats;
     }
 }
 
